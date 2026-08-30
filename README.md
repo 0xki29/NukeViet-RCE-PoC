@@ -116,6 +116,6 @@ Kiểm tra `admin_session.cookies` còn hiệu lực hay không.
 
 > Video PoC được thực hiện trên môi trường Lab.
 
-[▶️ Xem PoC Demo](./assets/poc-demo.webm)
+[▶️ Xem PoC Demo](./assets/poc.gif)
 
 
