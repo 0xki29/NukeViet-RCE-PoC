@@ -111,4 +111,11 @@ Kiểm tra `admin_session.cookies` còn hiệu lực hay không.
 
 * **Affected versions:** `NukeViet <= 4.5.09`
 * PoC được thiết kế cho môi trường **Lab / Authorized Pentest**.
-* Không commit `admin_session.cookies` hoặc `config.php` chứa thông tin nhạy cảm lên repository.
+
+## 🎥 PoC Demo
+
+> Video PoC được thực hiện trên môi trường Lab.
+
+[▶️ Xem PoC Demo](./assets/poc-demo.webm)
+
+
